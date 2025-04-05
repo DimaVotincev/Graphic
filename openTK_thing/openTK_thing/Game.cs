@@ -21,20 +21,26 @@ namespace openTK_thing
     {
         int width,height;
 
+        // квадрат
+        /*float[] vertices = {
+            -0.5f, 0.5f, 0f, // top left vertex - 0
+            0.5f, 0.5f, 0f, // top right vertex - 1
+            0.5f, -0.5f, 0f, // bottom right vertex - 2
+            -0.5f, -0.5f, 0f // bottom left vertex - 3
+        };*/
 
-        float[] vertices = {
-        -0.5f, 0.5f, 0f, // top left vertex - 0
-        0.5f, 0.5f, 0f, // top right vertex - 1
-        0.5f, -0.5f, 0f, // bottom right vertex - 2
-        -0.5f, -0.5f, 0f // bottom left vertex - 3
-        };
-
-        // порядок отрисовки вершин
-        uint[] indices =
+        // порядок отрисовки вершин у квадрата
+        /*uint[] indices =
             {
+                     
             0, 1, 2, //top triangle
-            2, 3, 0 //bottom triangle
-            };
+            2, 3, 0 //bottom triangle 
+            
+            };*/
+
+
+
+
         int EBO;
 
 
@@ -42,13 +48,106 @@ namespace openTK_thing
         Shader shaderProgram = new Shader();
 
         int textureID;
-        float[] texCoords =
+        /*float[] texCoords =
         {
         0f, 1f,
         1f, 1f,
         1f, 0f,
         0f, 0f
+        };*/
+        int textureVBO;
+
+
+        // кубик
+
+        List<Vector3> vertices = new List<Vector3>()
+        {	
+			//front face
+			new Vector3(-0.5f,  0.5f, 0.5f), //top-left vertice
+			new Vector3( 0.5f,  0.5f, 0.5f), //top-right vertice
+			new Vector3( 0.5f, -0.5f, 0.5f), //bottom-right vertice
+			new Vector3(-0.5f, -0.5f, 0.5f), //botom-left vertice
+			//right face
+			new Vector3( 0.5f,  0.5f, 0.5f), //top-left vertice
+			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
+			new Vector3( 0.5f, -0.5f, -0.5f), //bottom-right vertice
+			new Vector3( 0.5f, -0.5f, 0.5f), //botom-left vertice
+			//back face
+			new Vector3(-0.5f,  0.5f, -0.5f), //top-left vertice
+			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
+			new Vector3( 0.5f, -0.5f, -0.5f), //bottom-right vertice
+			new Vector3(-0.5f, -0.5f, -0.5f), //botom-left vertice
+			//left face
+			new Vector3( -0.5f,  0.5f, 0.5f), //top-left vertice
+			new Vector3( -0.5f,  0.5f, -0.5f), //top-right vertice
+			new Vector3( -0.5f, -0.5f, -0.5f), //bottom-right vertice
+			new Vector3( -0.5f, -0.5f, 0.5f), //botom-left vertice
+			// top face
+			new Vector3(-0.5f,  0.5f, -0.5f), //top-left vertice
+			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
+			new Vector3( 0.5f, 0.5f, 0.5f), //bottom-right vertice
+			new Vector3(-0.5f, 0.5f, 0.5f), //botom-left vertice
+			//bottom face
+			new Vector3(-0.5f,  -0.5f, -0.5f), //top-left vertice
+			new Vector3( 0.5f,  -0.5f, -0.5f), //top-right vertice
+			new Vector3( 0.5f, -0.5f, 0.5f), //bottom-right vertice
+			new Vector3(-0.5f, -0.5f, 0.5f), //botom-left vertice
+		};
+
+        List<Vector2> texCoords = new List<Vector2>()
+        {
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
+
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 0f),
+            new Vector2(0f, 0f),
         };
+
+        uint[] indices =
+        {
+            0, 1, 2,	 // front face
+			2, 3, 0,	
+
+			4, 5, 6,     // right face 
+            6, 7, 4,
+
+            8, 9, 10,    // back face
+            10, 11, 8,
+
+            12, 13, 14,  // left face
+            14, 15, 12,
+
+            16, 17, 18,  // top face
+            18, 19, 16,
+
+            20, 21, 22,  // bottom face
+            22, 23, 20
+        };
+
 
         public Game(int width, int height) : base 
             (GameWindowSettings.Default, NativeWindowSettings.Default)
@@ -69,8 +168,8 @@ namespace openTK_thing
 
             // прикрепляю VBO и копирую вершины в него
             GL.BindBuffer(BufferTarget.ArrayBuffer,VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length *
-                sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count*Vector3.SizeInBytes *
+                sizeof(float), vertices.ToArray(), BufferUsageHint.StaticDraw);
             //  _--------------------------------------------^ 
             // |StaticDraw: the data will most likely not change at all or very rarely.
             // |DynamicDraw: the data is likely to change a lot.
@@ -87,7 +186,7 @@ namespace openTK_thing
 
             // unbind
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
+            
 
 
 
@@ -105,12 +204,16 @@ namespace openTK_thing
             sizeof(uint), indices, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
-
-
-
-
-
-
+            //Create, bind texture
+            textureVBO = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, textureVBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, texCoords.Count * Vector3.SizeInBytes *
+            sizeof(float), texCoords.ToArray(), BufferUsageHint.StaticDraw);
+            //Point a slot number 1
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false,
+            0, 0);
+            //Enable the slot
+            GL.EnableVertexArrayAttrib(VAO, 1);
 
 
 
@@ -132,7 +235,7 @@ namespace openTK_thing
             //Load image
             StbImage.stbi_set_flip_vertically_on_load(1);
             ImageResult boxTexture =
-            ImageResult.FromStream(File.OpenRead("../../../Textures/kosmos.jpg"),
+            ImageResult.FromStream(File.OpenRead("../../../Textures/dog.PNG"),
             ColorComponents.RedGreenBlueAlpha);
             GL.TexImage2D(TextureTarget.Texture2D, 0,
             PixelInternalFormat.Rgba, boxTexture.Width, boxTexture.Height, 0,
@@ -148,7 +251,7 @@ namespace openTK_thing
 
 
 
-
+            GL.BindVertexArray(0);
 
 
 
@@ -182,8 +285,8 @@ namespace openTK_thing
 
 
 
-            
 
+            GL.Enable(EnableCap.DepthTest);
 
             base.OnLoad();
         }
@@ -193,19 +296,72 @@ namespace openTK_thing
             GL.DeleteBuffer(VAO);
             GL.DeleteBuffer(VBO);
             GL.DeleteBuffer(EBO);
-            
+            GL.DeleteTexture(textureID);
+
             shaderProgram.DeleteShader();
             base.OnUnload();
         }
 
+
+
+        float yRot = 0f;
+        float xRot = 0f;     
+        float zcoeff = 0.9f;
+        float zoom = -0.9f;
         // вызывается каждый кадр (рендеринг,связана с основной отрисовкой)
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             GL.ClearColor(0.5f, 0.7f, 0.9f, 1f);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             
             GL.UseProgram(shaderProgram.shaderHandle);
+            GL.BindTexture(TextureTarget.Texture2D, textureID); //
             GL.BindVertexArray(VAO);
+
+
+            yRot += 0.001f;
+            if(yRot >= 360f)
+            {
+                yRot = 0f;
+            }
+            
+            //Transformation
+            //Matrix4 model = Matrix4.Identity;
+            Matrix4 model = Matrix4.CreateRotationY(yRot);
+            /*model += Matrix4.CreateRotationZ(2f);
+            model += Matrix4.CreateRotationX(1f);*/
+
+            zoom += 0.0001f;
+            if(zoom >= zcoeff)
+            {
+                zoom = zcoeff*(-1f);
+            }
+
+            Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -3f+zoom);
+            model *= translation;
+            Matrix4 view = Matrix4.Identity;
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), width / height, 0.1f, 100.0f);
+
+            //model = Matrix4.CreateTranslation(0f, 0f, -1f);
+
+            // отправляем на GPU
+            int modelLocation =
+            GL.GetUniformLocation(shaderProgram.shaderHandle, "model");
+            int viewLocation =
+            GL.GetUniformLocation(shaderProgram.shaderHandle, "view");
+            int projectionLocation =
+            GL.GetUniformLocation(shaderProgram.shaderHandle, "projection");
+
+            
+
+            // отправляем в uniforms
+            GL.UniformMatrix4(modelLocation, true, ref model);
+            GL.UniformMatrix4(viewLocation, true, ref view);
+            GL.UniformMatrix4(projectionLocation, true, ref projection);
+
+
+
+
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             GL.DrawElements(PrimitiveType.Triangles, indices.Length,
@@ -220,6 +376,13 @@ namespace openTK_thing
             base.OnRenderFrame(args);
         }
 
+
+
+
+
+
+
+
         // тоже вызывается каждый кадр и обновляет окно, когда оно готово
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
@@ -228,19 +391,6 @@ namespace openTK_thing
             {
                 Close();
             }
-
-            /*if (KeyboardState.IsKeyDown(Keys.F11) )
-            {
-                if (WindowState == WindowState.Normal)
-                {
-                    WindowState = WindowState.Fullscreen;                   
-                }
-                else
-                {
-                    WindowState = WindowState.Normal;
-                }
-                Thread.Sleep(1000);
-            }*/
             
         }
 
