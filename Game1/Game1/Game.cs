@@ -36,180 +36,15 @@ namespace Game1
     {
         int width,height;
 
-        // квадрат
-        /*float[] vertices = {
-            -0.5f, 0.5f, 0f, // top left vertex - 0
-            0.5f, 0.5f, 0f, // top right vertex - 1
-            0.5f, -0.5f, 0f, // bottom right vertex - 2
-            -0.5f, -0.5f, 0f // bottom left vertex - 3
-        };*/
-
-        // порядок отрисовки вершин у квадрата
-        /*uint[] indices =
-            {
-                     
-            0, 1, 2, //top triangle
-            2, 3, 0 //bottom triangle 
-            
-            };*/
-
-
-
-
-        int EBO;
-
-
-        int VAO, VBO;
         Shader shaderProgram = new Shader();
-
-        int textureID;
-        /*float[] texCoords =
-        {
-        0f, 1f,
-        1f, 1f,
-        1f, 0f,
-        0f, 0f
-        };*/
         int textureVBO;
 
-
-        // кубик
-
-        List<Vector3> vertices1 = new List<Vector3>()
-        {	
-			//front face
-			new Vector3(-0.5f,  0.5f, 0.5f), //top-left vertice
-			new Vector3( 0.5f,  0.5f, 0.5f), //top-right vertice
-			new Vector3( 0.5f, -0.5f, 0.5f), //bottom-right vertice
-			new Vector3(-0.5f, -0.5f, 0.5f), //botom-left vertice
-			//right face
-			new Vector3( 0.5f,  0.5f, 0.5f), //top-left vertice
-			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
-			new Vector3( 0.5f, -0.5f, -0.5f), //bottom-right vertice
-			new Vector3( 0.5f, -0.5f, 0.5f), //botom-left vertice
-			//back face
-			new Vector3(-0.5f,  0.5f, -0.5f), //top-left vertice
-			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
-			new Vector3( 0.5f, -0.5f, -0.5f), //bottom-right vertice
-			new Vector3(-0.5f, -0.5f, -0.5f), //botom-left vertice
-			//left face
-			new Vector3( -0.5f,  0.5f, 0.5f), //top-left vertice
-			new Vector3( -0.5f,  0.5f, -0.5f), //top-right vertice
-			new Vector3( -0.5f, -0.5f, -0.5f), //bottom-right vertice
-			new Vector3( -0.5f, -0.5f, 0.5f), //botom-left vertice
-			// top face
-			new Vector3(-0.5f,  0.5f, -0.5f), //top-left vertice
-			new Vector3( 0.5f,  0.5f, -0.5f), //top-right vertice
-			new Vector3( 0.5f, 0.5f, 0.5f), //bottom-right vertice
-			new Vector3(-0.5f, 0.5f, 0.5f), //botom-left vertice
-			//bottom face
-			new Vector3(-0.5f,  -0.5f, -0.5f), //top-left vertice
-			new Vector3( 0.5f,  -0.5f, -0.5f), //top-right vertice
-			new Vector3( 0.5f, -0.5f, 0.5f), //bottom-right vertice
-			new Vector3(-0.5f, -0.5f, 0.5f), //botom-left vertice
-		};
-
-
-
-
-        List<Vector2> texCoords1 = new List<Vector2>()
-        {
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f),
-        };
-
-        uint[] indices1 =
-        {
-            0, 1, 2,	 // front face
-			2, 3, 0,	
-
-			4, 5, 6,     // right face 
-            6, 7, 4,
-
-            8, 9, 10,    // back face
-            10, 11, 8,
-
-            12, 13, 14,  // left face
-            14, 15, 12,
-
-            16, 17, 18,  // top face
-            18, 19, 16,
-
-            20, 21, 22,  // bottom face
-            22, 23, 20
-        };
-
-
         
-        List<Vector3> vertices2 = new List<Vector3>()
-        {	
-			//front face
-			new Vector3(-3f,  3f, 3f), //top-left vertice
-			new Vector3( 3f,  3f, 3f), //top-right vertice
-			new Vector3( 3f, -3f, 3f), //bottom-right vertice
-			new Vector3(-3f, -3f, 3f), //botom-left vertice
-        };
-
-
-        List<Vector2> texCoords2 = new List<Vector2>()
-        {
-            new Vector2(0f, 1f),
-            new Vector2(1f, 1f),
-            new Vector2(1f, 0f),
-            new Vector2(0f, 0f)
-        };
-
-
-        uint[] indices2 =
-        {
-            0, 1, 2,	 // front face
-			2, 3, 0,
-        };
-
-
-
         List<string> tex_paths = new List<string>();
         List<Data> all_vertices = new List<Data>();
 
 
         int[] VAOs, VBOs, EBOs, textureIDs;
-
-
-
-
-        /*uint[] indices;
-        List<Vector2> texCoords;
-        List<Vector3> vertices;*/
-
-
-        // not need camera for game
 
         Camera camera;
 
@@ -218,12 +53,6 @@ namespace Game1
         public Game(int width, int height) : base 
             (GameWindowSettings.Default, NativeWindowSettings.Default)
         {
-
-            // это потом убрать
-            /*all_vertices.Add(new Data(vertices1,texCoords1,indices1));
-            tex_paths.Add("../../../Textures/dog.PNG");
-            all_vertices.Add(new Data(vertices2, texCoords2, indices2));
-            tex_paths.Add("../../../Textures/kosmos.jpg");*/
 
 
             // новый метод ( с использованием All_data)
@@ -250,7 +79,7 @@ namespace Game1
 
 
 
-            Vector3 pos = new Vector3(-0.005f, 5f, 6.5f); ;
+            Vector3 pos = new Vector3(-0.005f, 5f, 6.5f);
             camera = new Camera(width, height, pos);
 
 
@@ -266,7 +95,9 @@ namespace Game1
         protected override void OnLoad()
         {
 
-
+            Console.WriteLine("To start game       press UP  after loading");
+            Console.WriteLine("To make  fullscreen press F11 after loading");
+            Console.WriteLine("To end   game       press Esc after loading");
 
             // прохожусь по всем объектам
             for (int i = 0; i < all_vertices.Count; i++)
@@ -372,23 +203,32 @@ namespace Game1
                 }
 
             }
-
-
-
             GL.Enable(EnableCap.DepthTest);
-
-            
-
-
             base.OnLoad();
         }
 
         protected override void OnUnload()
         {
-            GL.DeleteBuffer(VAO);
-            GL.DeleteBuffer(VBO);
-            GL.DeleteBuffer(EBO);
-            GL.DeleteTexture(textureID);
+            Console.WriteLine("----Thank you for playing!----");
+            for (int i = 0; i < VAOs.Length; i++)
+            {
+                GL.DeleteBuffer(VAOs[i]);
+            }
+
+            for (int i = 0; i < VBOs.Length; i++)
+            {
+                GL.DeleteBuffer(VBOs[i]);
+            }
+
+            for (int i = 0; i < EBOs.Length; i++)
+            {
+                GL.DeleteBuffer(EBOs[i]);
+            }
+
+            for (int i = 0; i < textureIDs.Length; i++)
+            {
+                GL.DeleteBuffer(textureIDs[i]);
+            }
 
             shaderProgram.DeleteShader();
             base.OnUnload();
@@ -398,6 +238,7 @@ namespace Game1
 
         List<Vector3> treemoves;
         Random rand = new Random();
+        int is_gamestarted = 0;
         // вызывается каждый кадр (рендеринг,связана с основной отрисовкой)
         protected override void OnRenderFrame(FrameEventArgs args)
         {
@@ -415,9 +256,7 @@ namespace Game1
             {
                 Vector3 pos = camera.position;
 
-                Console.WriteLine($"X: {pos.X}");
-                Console.WriteLine($"Y: {pos.Y}");
-                Console.WriteLine($"Z: {pos.Z}");
+                
 
 
 
@@ -427,165 +266,60 @@ namespace Game1
 
 
 
-
-                /*yRot += 0.0001f;
-                if(yRot >= 360f)
-                {
-                    yRot = 0f;
-                }*/
-                
-
-
                 //Transformation
                 Matrix4 model = Matrix4.Identity;
-                //Matrix4 model = Matrix4.CreateRotationY(yRot);
-                /*model += Matrix4.CreateRotationZ(2f);
-                model += Matrix4.CreateRotationX(1f);*/
 
-                /*zoom += 0.0001f;
-                if(zoom >= zcoeff)
+
+                if(is_gamestarted == 1)
                 {
-                    zoom = zcoeff*(-1f);
-                }*/
-
-                // начиная с этого индекса , остальны объекты - деревья
-
-
-                //treemove += 0.001f;
-                
-                // если объект - машина (или её часть)
-               if (i <=6)
-                {
-                    Matrix4 treeTranslation =
-                        Matrix4.CreateTranslation(carMovement);
-                    model *= treeTranslation;
-                } else if (i >= first_tree_id) // если объект - дерево
-                {
-                    if (tree_part_loaded == 2)
+                    // если объект - машина (или её часть)
+                    if (i <= 6)
                     {
-                        treemoveid++;
-                        tree_part_loaded = 0;
-                    }
-
-
-                    // хранить не флоты tremoves
-                    // а вектора смещений Vector3 treemove3d
-                    // и мой флот treemoves это будет просто treemove3d[2]
-                    // а координату по X изменяю так же,но везде где noveX
-                    // там treemove3d[0
-                    
-
-
-                    float treeZpos = ald.treePositions[treemoveid].Z + treemoves[treemoveid].Z;
-                    
-
-                    // телепорт(на заданное значение по Z) + смещение по Х рандомное
-                    if (treeZpos >= 5f)
-                    {
-                        // нужно смещение -20f предположим
-                        // то есть
-                        float desiredZ = -37f;
-                        float offsetX = (float)(rand.NextDouble() * -2f + 1f); // [-1, -11]
-
-                        //float newX = ald.treePositions[treemoveid][0] - treemoves[treemoveid].X + offsetX;
-                        float newX = 0;
-                        treemoves[treemoveid]+= new Vector3(newX,0,desiredZ);
-                        //moveX = ald.treePositions[treemoveid].X + (float)(rand.NextDouble() * -2f + 1f);
-
-                    }
-
-
-
-                    Matrix4 treeTranslation = 
-                        Matrix4.CreateTranslation(treemoves[treemoveid]);
-                    model *= treeTranslation;
-                    treemoves[treemoveid] += new Vector3(0, 0, 0.07f);
-
-                    tree_part_loaded++;
-
-                    
-                    
-
-                    
-                }
-                
-
-
-
-                /*if(i == 10 || i == 11)
-                {
-                    Matrix4 treeTranslation = Matrix4.CreateTranslation(0f, 0f, treemoves[0]);
-                    model *= treeTranslation;
-                    treemoves[0] += 0.01f;
-                    if (treemoves[0] >= 5f)
-                    {
-                        treemoves[0] = -15f;
-                    }
-                }
-
-                if (i == 12 || i == 13)
-                {
-                    Matrix4 treeTranslation = Matrix4.CreateTranslation(0f, 0f, treemoves[1]);
-                    model *= treeTranslation;
-                    treemoves[1] += 0.1f;
-                    if (treemoves[1] >= 5f)
-                    {
-                        treemoves[1] = -15f;
-                    }
-                }*/
-
-
-                /*if (i >= 10)
-                {
-                    // Деревья — смещаем их, допустим, по оси X
-                    if (treemove <= -5f) // предел, когда дерево "исчезает"
-                    {
-                        treemove = 20f; // телепорт обратно
-                    }
-
-                    treemove -= 1f;
-                    if (ald.treePositions[1].Z <= -5f)
-                    {
-                        
-                        treemove = 20f;
-
-                    } else
-                    {
-                        Matrix4 treeTranslation = Matrix4.CreateTranslation(0f, 0f, -treemove);
+                        Matrix4 treeTranslation =
+                            Matrix4.CreateTranslation(carMovement);
                         model *= treeTranslation;
                     }
-                        
+                    else if (i >= first_tree_id) // если объект - дерево
+                    {
+                        if (tree_part_loaded == 2)
+                        {
+                            treemoveid++;
+                            tree_part_loaded = 0;
+                        }
+
+
+                        float treeZpos = ald.treePositions[treemoveid].Z + treemoves[treemoveid].Z;
+
+
+                        // телепорт(на заданное значение по Z) + смещение по Х рандомное
+                        if (treeZpos >= 5f)
+                        {
+                            float desiredZ = -37f;
+                            float offsetX = (float)(rand.NextDouble() * -2f + 1f); // [-1, -11]
+                            float newX = 0;
+                            treemoves[treemoveid] += new Vector3(newX, 0, desiredZ);
+
+
+                        }
+
+                        Matrix4 treeTranslation =
+                            Matrix4.CreateTranslation(treemoves[treemoveid]);
+                        model *= treeTranslation;
+                        treemoves[treemoveid] += new Vector3(0, 0, 0.007f);
+
+                        tree_part_loaded++;
+                    }
                 }
-                else
-                {
-                    
-                    // Обычное смещение для остальных объектов
-                    Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -2f + zoom);
-                    model *= translation;
-                }
-                Console.WriteLine($"Movetr: {treemove}");*/
-
-
-                /*Matrix4 translation = Matrix4.CreateTranslation(0f, 0f, -2f + zoom);
-                model *= translation;*/
-
-
-
-                //Matrix4 view = Matrix4.Identity;
-                //Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), width / height, 0.1f, 100.0f);
-
-                // not need camera for game
+                
+                
+                
                 Matrix4 view = camera.GetViewMatrix();
                 Matrix4 projection = camera.GetProjection();
-
-                //model = Matrix4.CreateTranslation(0f, 0f, -1f);
 
                 // отправляем на GPU
                 int modelLocation = GL.GetUniformLocation(shaderProgram.shaderHandle, "model");
                 int viewLocation = GL.GetUniformLocation(shaderProgram.shaderHandle, "view");
                 int projectionLocation = GL.GetUniformLocation(shaderProgram.shaderHandle, "projection");
-
-
 
 
 
@@ -615,28 +349,51 @@ namespace Game1
         // тоже вызывается каждый кадр и обновляет окно, когда оно готово
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            
+
+            if (KeyboardState.IsKeyDown(Keys.F11))
+            {
+                if (WindowState != WindowState.Fullscreen)
+                {
+                    WindowState = WindowState.Fullscreen;
+                }
+            }
+
+
+
+
+
             if (KeyboardState.IsKeyDown(Keys.Escape))
             {
                 Close();
             }
+            if (KeyboardState.IsKeyDown(Keys.Up))
+            {
+                is_gamestarted = 1;
+            }
+
 
             float range = 3.5f;
-            if (KeyboardState.IsKeyDown(Keys.Left))
+            if (is_gamestarted ==1)
             {
-                
-                if (-range <= carMovement.X)
+                if (KeyboardState.IsKeyDown(Keys.Left))
                 {
-                    carMovement += new Vector3(-0.1f, 0, 0);
-                }
-                
-            } else if (KeyboardState.IsKeyDown(Keys.Right)) {
 
-                if (carMovement.X <= range)
+                    if (-range <= carMovement.X)
+                    {
+                        carMovement += new Vector3(-0.02f, 0, 0);
+                    }
+
+                }
+                else if (KeyboardState.IsKeyDown(Keys.Right))
                 {
-                    carMovement += new Vector3(0.1f, 0, 0);
+
+                    if (carMovement.X <= range)
+                    {
+                        carMovement += new Vector3(0.02f, 0, 0);
+                    }
                 }
             }
+            
 
                 MouseState mouse = MouseState;
             KeyboardState input = KeyboardState;

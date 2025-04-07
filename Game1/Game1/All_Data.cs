@@ -9,7 +9,7 @@ namespace Game1
     {
         public List<Data> all_data = new List<Data>();
         public List<string> tex_paths = new List<string>();
-        public int treecount = 0;
+        public  int treecount =40;
 
 
         // примерные
@@ -63,6 +63,9 @@ namespace Game1
 
             all_data.Add(new SkyBackground().sky);
             tex_paths.Add("../../../Textures/SKY.jpg");
+
+            
+
             // -------around details
 
 
@@ -106,13 +109,54 @@ namespace Game1
                         tex_paths.Add("../../../Textures/GREEN_TREE.jpg");
                         break;
                 }
-
+                treecount = treePositions.Count;
             }
-            treecount = treePositions.Count;
+            
             return;
         }
     }
 
+    class Text
+    {
+        // camera
+        // target  Vector3(0,1.3f,-4f);
+        // pos     Vector3(-0.005f, 5f, 6.5f);
+        List<Vector3> vertices = new List<Vector3>()
+        {
+            new Vector3(-1f, 4.5f, 4f), // bottom left
+            new Vector3( 1f, 4.5f, 4f), // bottom right
+            new Vector3( 1f, 5.7f, 4f), // top right
+            new Vector3(-1f, 5.7f, 4f)  // top left
+        };
+
+        List<Vector2> texCoords = new List<Vector2>()
+        {
+            new Vector2(0, 0), 
+            new Vector2(1, 0), 
+            new Vector2(1, 1), 
+            new Vector2(0, 1)
+        };
+
+        uint[] indices = {
+            0,1,2,
+            2,3,0
+        };
+
+
+
+
+        public Data text;
+
+        public Text()
+        {
+            text = new Data
+            {
+                vertices = vertices,
+                texCoord = texCoords,
+                indices = indices
+            };
+        }
+    }
  
     class Body
     {
@@ -755,6 +799,36 @@ namespace Game1
     }
 
 
+    /*class RoadMarking
+    {
+        List<Vector3> vertices = new List<Vector3>()
+    {
+        new Vector3(-0.5f, 0, 0.5f), new Vector3(0.5f, 0, 0.5f),
+        new Vector3(0.5f, 0, -0.5f), new Vector3(-0.5f, 0, -0.5f)
+    };
+
+        List<Vector2> texCoords = new List<Vector2>()
+    {
+        new Vector2(0, 0), new Vector2(1, 0),
+        new Vector2(1, 1), new Vector2(0, 1)
+    };
+
+        uint[] indices = {
+        0, 1, 2, 2, 3, 0
+    };
+
+        public Data marking;
+
+        public RoadMarking()
+        {
+            marking = new Data
+            {
+                vertices = vertices,
+                texCoord = texCoords,
+                indices = indices
+            };
+        }
+    }*/
 
 
 
