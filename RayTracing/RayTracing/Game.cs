@@ -24,19 +24,27 @@ namespace RayTracing
 
 
 
-
-
-
-
-
         int width, height;
         int vbo_position;
         Vector3[] vertdata = new Vector3[] {
         new Vector3(-1f, -1f, 0f),
         new Vector3( 1f, -1f, 0f),
         new Vector3( 1f, 1f, 0f),
-        new Vector3(-1f, 1f, 0f) };
+        new Vector3(-1f, 1f, 0f) }; 
 
+        /*Vector3[] vertdata = new Vector3[] {
+        new Vector3(0,0,0),
+        new Vector3(0,0,0),
+        new Vector3(0,0,0),
+        new Vector3(0,0,0) };
+
+       
+        Vector3[] vertdata = new Vector3[] {
+        new Vector3(-0.5f,-0.5f,0),
+        new Vector3(0.5f,-0.5f,0),
+        new Vector3(0.5f,0.5f,0),
+        new Vector3(-0.5f,0.5f,0)};
+         */
 
         int EBO;
         int VAO, VBO;
@@ -65,6 +73,7 @@ namespace RayTracing
         public Game(int width, int height) : base
             (GameWindowSettings.Default, NativeWindowSettings.Default)
         {
+            
             //  Vector2i - двумерный массив интов
             this.CenterWindow(new Vector2i(width, height));
             this.height = height;

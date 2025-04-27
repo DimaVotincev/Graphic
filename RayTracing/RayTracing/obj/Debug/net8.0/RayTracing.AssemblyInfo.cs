@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RayTracing")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ec26234f2d19662b05c996f4011dedab24000f1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3699ad4637948df8acefdef651c46f86561d23c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("RayTracing")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RayTracing")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
