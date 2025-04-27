@@ -30,7 +30,7 @@ namespace RayTracing
         new Vector3(-1f, -1f, 0f),
         new Vector3( 1f, -1f, 0f),
         new Vector3( 1f, 1f, 0f),
-        new Vector3(-1f, 1f, 0f) }; 
+        new Vector3(-1f, 1f, 0f) };
 
         /*Vector3[] vertdata = new Vector3[] {
         new Vector3(0,0,0),
@@ -45,6 +45,12 @@ namespace RayTracing
         new Vector3(0.5f,0.5f,0),
         new Vector3(-0.5f,0.5f,0)};
          */
+
+
+
+
+
+
 
         int EBO;
         int VAO, VBO;

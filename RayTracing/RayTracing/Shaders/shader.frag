@@ -4,6 +4,12 @@
 const int DIFFUSE = 1;
 const int REFLECTION = 2;
 const int REFRACTION = 3;
+const int DIFFUSE_REFLECTION = 1;
+const int MIRROR_REFLECTION = 2;
+
+
+int mat_color_id = 0;
+
 
 out vec4 FragColor;
 in vec3 glPosition;
@@ -253,7 +259,7 @@ struct SMaterial
 
 
 bool Raytrace ( SRay ray, SSphere spheres[2], STriangle triangles[10], 
-SMaterial materials[6], float start, float final, inout SIntersection intersect )
+SMaterial materials[10], float start, float final, inout SIntersection intersect )
 {
 bool result = false;
 float test = start;
@@ -267,11 +273,24 @@ for(int i = 0; i < 2; i++)
  intersect.Time = test;
  intersect.Point = ray.Origin + ray.Direction * test;
  intersect.Normal = normalize ( intersect.Point - spheres[i].Center );
+
+ /*
  intersect.Color = vec3(1,0,0);
  intersect.LightCoeffs = vec4(0,0,0,0);
  intersect.ReflectionCoef = 0;
  intersect.RefractionCoef = 0;
  intersect.MaterialType = 0;
+ */
+
+ 
+ intersect.Color = vec3(0,0,0);
+ intersect.LightCoeffs = materials[2].LightCoeffs;
+ intersect.ReflectionCoef = materials[2].ReflectionCoef;
+ intersect.RefractionCoef = materials[2].RefractionCoef;
+ intersect.MaterialType = materials[2].MaterialType;
+
+
+
  result = true;
  }
 }
@@ -294,13 +313,25 @@ for(int i = 0; i < 10; i++)
  intersect.MaterialType = 0;
  */
 
-
- intersect.Color = materials[0].Color;
+ intersect.Color = materials[i%10].Color;
  intersect.LightCoeffs = materials[0].LightCoeffs;
  intersect.ReflectionCoef = materials[0].ReflectionCoef;
  intersect.RefractionCoef = materials[0].RefractionCoef;
  intersect.MaterialType = materials[0].MaterialType;
 
+ mat_color_id++;
+ if(mat_color_id >= 6) {
+    mat_color_id = 0;
+ }
+
+ // walls - mirrors
+ /*
+ intersect.Color = materials[2].Color;
+ intersect.LightCoeffs = materials[2].LightCoeffs;
+ intersect.ReflectionCoef = materials[2].ReflectionCoef;
+ intersect.RefractionCoef = materials[2].RefractionCoef;
+ intersect.MaterialType = materials[2].MaterialType;
+ */
  
 
 
@@ -312,6 +343,17 @@ for(int i = 0; i < 10; i++)
 }
 return result;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 struct SLight
@@ -326,7 +368,7 @@ STriangle triangles[10];
 SSphere spheres[2];
 
 SLight light;
-SMaterial materials[6];
+SMaterial materials[10];
 
 
 
@@ -335,7 +377,7 @@ SMaterial materials[6];
 
 
 
-void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6])
+void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[10])
 {
  //** LIGHT **//
  light.Position = vec3(0.0, 2.0, -4.0f);
@@ -351,6 +393,22 @@ void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6
  materials[1].ReflectionCoef = 0.5;
  materials[1].RefractionCoef = 1.0;
  materials[1].MaterialType = DIFFUSE; 
+
+ materials[2].Color = vec3(0.0, 0.0, 1.0);
+ materials[2].LightCoeffs = vec4(lightCoefs);
+ materials[2].ReflectionCoef = 0.5;
+ materials[2].RefractionCoef = 1.0;
+ materials[2].MaterialType = REFLECTION; 
+
+
+ materials[3].Color = vec3(1.0,0,0);  
+ materials[4].Color = vec3(0,1.0,0);  
+ materials[5].Color = vec3(0,0,1.0);  
+ materials[6].Color = vec3(1.0,1.0,0);  
+ materials[7].Color = vec3(1.0,0,1.0); 
+ materials[8].Color = vec3(0,1.0,1.0);  
+ materials[9].Color = vec3(1.0,1.0,1.0); 
+
 }
 
 
@@ -398,12 +456,125 @@ float Shadow(SLight currLight, SIntersection intersect)
 }
 
 
+struct STracingRay
+{
+SRay ray;
+float contribution;
+int depth;
+};
+
+
+
+
+
+const int MAX_STACK_SIZE = 100;
+STracingRay rayStack[MAX_STACK_SIZE];
+int stackIndex = 0; 
+
+void pushRay(STracingRay trRay) {
+    if (stackIndex < MAX_STACK_SIZE) {
+        rayStack[stackIndex] = trRay;
+        stackIndex++;
+    }
+}
+
+
+STracingRay popRay() {
+    if (stackIndex > 0) {
+        stackIndex--;
+        return rayStack[stackIndex];
+    }
+    return STracingRay(SRay(vec3(0.0), vec3(0.0)), 0.0, 0); 
+}
+
+bool isEmpty() {
+    return stackIndex == 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 void main ( void )
 {
+ initializeDefaultLightMaterials(light,materials);
+ float start = 0;
+ float final = BIG;
+ uCamera = initializeDefaultCamera();
+ initializeDefaultScene(triangles, spheres);
+
+ SRay ray = GenerateRay( uCamera);
+
+ SIntersection intersect;
+ intersect.Time = BIG;
+
+ vec3 resultColor = vec3(0,0,0);
+
+
+ STracingRay trRay = STracingRay(ray, 1, 0);
+ pushRay(trRay);
+ while(!isEmpty())
+ {
+ trRay = popRay();
+ ray = trRay.ray;
+ intersect;
+ intersect.Time = BIG;
+ start = 0;
+ final = BIG;
+ if (Raytrace(ray, spheres, triangles, materials, start, final, intersect)) 
+ {
+ switch(intersect.MaterialType)
+     {
+     case DIFFUSE_REFLECTION:
+     {
+     float shadowing = Shadow(light, intersect);
+     resultColor += trRay.contribution * Phong ( intersect, light, shadowing );
+     break;
+     }
+    case MIRROR_REFLECTION: 
+     {
+     if(intersect.ReflectionCoef < 1)
+     {
+         float contribution = trRay.contribution * (1 - intersect.ReflectionCoef);
+         float shadowing = Shadow(light, intersect);
+         resultColor += contribution * Phong(intersect, light, shadowing);
+     }
+     vec3 reflectDirection = reflect(ray.Direction, intersect.Normal);
+     // creare reflection ray
+     float contribution = trRay.contribution * intersect.ReflectionCoef;
+     STracingRay reflectRay = STracingRay(
+     SRay(intersect.Point + reflectDirection * EPSILON, reflectDirection),
+     contribution, trRay.depth + 1);
+     pushRay(reflectRay);
+
+     break;
+    }
+
+} // switch
+
+ } // if (Raytrace(ray, start, final, intersect)) 
+ FragColor = vec4 (resultColor, 1.0);
+} // while(!isEmpty())
+
+
+
+/*
 initializeDefaultLightMaterials(light,materials);
  float start = 0;
  float final = BIG;
@@ -427,4 +598,5 @@ initializeDefaultLightMaterials(light,materials);
  // resultColor += contribution* Phong ( intersect, light, shadowing );
  } 
  FragColor = vec4 (resultColor, 1.0);
+ */
 }
