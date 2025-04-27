@@ -418,6 +418,7 @@ initializeDefaultLightMaterials(light,materials);
 
  vec3 resultColor = vec3(0,0,0);
  
+
  if (Raytrace(ray, spheres, triangles, materials, start, final, intersect)) 
  {
  //resultColor = vec3(1,0,0);
