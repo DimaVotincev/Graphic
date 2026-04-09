@@ -51,13 +51,13 @@ namespace GraphicLab1
             {
                 // передаю информацию BackgroudWorker 
                 // о состоянии обхода
-                worker.ReportProgress((int)((float)i / resultImage.Width * 100));
-
-                // если пользователь нажал "отмена"
-                if (worker.CancellationPending)
+                if (worker != null)
                 {
-                    return null;
+                    worker.ReportProgress((int)((float)i / resultImage.Width * 100));
+                    if (worker.CancellationPending) return null;
                 }
+
+                
 
                 for (int j = 0; j < sourceImage.Height; j++)
                 {
@@ -71,6 +71,212 @@ namespace GraphicLab1
 
 
     }
+
+
+
+
+
+    class HighPassFilter : Filters
+    {
+        private int radius;
+
+        // Чем больше радиус, тем крупнее тени он убирает. Для текстур 512x512 обычно хватает 15-30
+        public HighPassFilter(int radius = 15)
+        {
+            this.radius = radius;
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            return sourceImage.GetPixel(0, 0); // Не используется напрямую
+        }
+
+        public override Bitmap processImage(Bitmap sourceImage, BackgroundWorker worker)
+        {
+            Bitmap resultImage = new Bitmap(sourceImage.Width, sourceImage.Height);
+
+            for (int i = 0; i < sourceImage.Width; i++)
+            {
+                worker.ReportProgress((int)((float)i / resultImage.Width * 100));
+                if (worker.CancellationPending) return null;
+
+                for (int j = 0; j < sourceImage.Height; j++)
+                {
+                    // Шаг 1: Находим локальную среднюю освещенность (Low Pass / Размытие)
+                    int rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+                    for (int k = -radius; k <= radius; k++)
+                    {
+                        for (int l = -radius; l <= radius; l++)
+                        {
+                            int idX = Clamp(i + k, 0, sourceImage.Width - 1);
+                            int idY = Clamp(j + l, 0, sourceImage.Height - 1);
+                            Color neighbor = sourceImage.GetPixel(idX, idY);
+                            rSum += neighbor.R;
+                            gSum += neighbor.G;
+                            bSum += neighbor.B;
+                            count++;
+                        }
+                    }
+
+                    Color orig = sourceImage.GetPixel(i, j);
+                    int avgR = rSum / count;
+                    int avgG = gSum / count;
+                    int avgB = bSum / count;
+
+                    // Шаг 2: Вычитаем среднюю освещенность из оригинала и добавляем 128 (серый)
+                    int r = Clamp(orig.R - avgR + 128, 0, 255);
+                    int g = Clamp(orig.G - avgG + 128, 0, 255);
+                    int b = Clamp(orig.B - avgB + 128, 0, 255);
+
+                    resultImage.SetPixel(i, j, Color.FromArgb(r, g, b));
+                }
+            }
+            return resultImage;
+        }
+    }
+
+
+
+
+    class LocalIlluminationCorrectionFilter : Filters
+    {
+        private int radius = 20;
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y) { return Color.Black; }
+
+        public override Bitmap processImage(Bitmap sourceImage, BackgroundWorker worker)
+        {
+            Bitmap resultImage = new Bitmap(sourceImage.Width, sourceImage.Height);
+
+            for (int i = 0; i < sourceImage.Width; i++)
+            {
+                worker.ReportProgress((int)((float)i / resultImage.Width * 100));
+                if (worker.CancellationPending) return null;
+
+                for (int j = 0; j < sourceImage.Height; j++)
+                {
+                    int rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+                    for (int k = -radius; k <= radius; k++)
+                    {
+                        for (int l = -radius; l <= radius; l++)
+                        {
+                            int idX = Clamp(i + k, 0, sourceImage.Width - 1);
+                            int idY = Clamp(j + l, 0, sourceImage.Height - 1);
+                            Color c = sourceImage.GetPixel(idX, idY);
+                            rSum += c.R; gSum += c.G; bSum += c.B;
+                            count++;
+                        }
+                    }
+
+                    Color orig = sourceImage.GetPixel(i, j);
+                    // Защита от деления на ноль (Math.Max)
+                    int avgR = Math.Max(rSum / count, 1);
+                    int avgG = Math.Max(gSum / count, 1);
+                    int avgB = Math.Max(bSum / count, 1);
+
+                    // Делим оригинал на локальный свет и умножаем на целевую яркость (например, 128)
+                    int r = Clamp((int)(orig.R * 128.0f / avgR), 0, 255);
+                    int g = Clamp((int)(orig.G * 128.0f / avgG), 0, 255);
+                    int b = Clamp((int)(orig.B * 128.0f / avgB), 0, 255);
+
+                    resultImage.SetPixel(i, j, Color.FromArgb(r, g, b));
+                }
+            }
+            return resultImage;
+        }
+    }
+
+
+
+
+    class DiagonalSymmetryFilter : Filters
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int w = sourceImage.Width;
+            int h = sourceImage.Height;
+
+            // Если текстура не квадратная, симметрия может исказиться, 
+            // но для текстур UE5 это идеальный вариант.
+
+            // Проверяем, находится ли пиксель в "левой-верхней" половине
+            // относительно побочной диагонали
+            if (x + y < w - 1)
+            {
+                // Вычисляем симметричную координату в "правой-нижней" части
+                int symX = w - 1 - y;
+                int symY = h - 1 - x;
+
+                // Защита от случайного выхода за границы
+                symX = Clamp(symX, 0, w - 1);
+                symY = Clamp(symY, 0, h - 1);
+
+                return sourceImage.GetPixel(symX, symY);
+            }
+            else
+            {
+                // Если мы и так в правой-нижней части (или на самой диагонали),
+                // оставляем оригинальный пиксель
+                return sourceImage.GetPixel(x, y);
+            }
+        }
+    }
+
+
+
+    class BottomLeftSymmetryFilter : Filters
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int w = sourceImage.Width;
+            int h = sourceImage.Height;
+
+            int sourceX = x;
+            int sourceY = y;
+
+            // Если пиксель находится в правой половине изображения, 
+            // зеркально переносим его координату X в левую половину
+            if (x >= w / 2)
+            {
+                sourceX = w - 1 - x;
+            }
+
+            // Если пиксель находится в верхней половине изображения, 
+            // зеркально переносим его координату Y в нижнюю половину
+            if (y < h / 2)
+            {
+                sourceY = h - 1 - y;
+            }
+
+            // Защита от выхода за границы (на всякий случай)
+            sourceX = Clamp(sourceX, 0, w - 1);
+            sourceY = Clamp(sourceY, 0, h - 1);
+
+            // Возвращаем цвет пикселя из "эталонной" левой нижней четверти
+            return sourceImage.GetPixel(sourceX, sourceY);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     class InvertFilter : Filters

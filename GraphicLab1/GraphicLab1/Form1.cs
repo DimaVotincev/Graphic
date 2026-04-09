@@ -240,14 +240,15 @@ namespace GraphicLab1
 
         private void применитьСлучайныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Random random = new Random(); 
+            Random random = new Random();
 
             int rm = random.Next(16, 256);
             rm /= 16;
-            
-           
 
-            switch (rm) {
+
+
+            switch (rm)
+            {
                 case 1:
                     InvertFilter filter1 = new InvertFilter();
                     backgroundWorker1.RunWorkerAsync(filter1);
@@ -302,7 +303,7 @@ namespace GraphicLab1
                     backgroundWorker1.RunWorkerAsync(filter13);
                     return;
                 case 14:
-                    SobelFilter filter14 = new SobelFilter();                  
+                    SobelFilter filter14 = new SobelFilter();
                     backgroundWorker1.RunWorkerAsync(filter14);
                     break;
                 case 15:
@@ -313,6 +314,122 @@ namespace GraphicLab1
                     break;
             }
         }
+
+        private void highPassToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HighPassFilter filter = new HighPassFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void localILLuminationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocalIlluminationCorrectionFilter filter = new LocalIlluminationCorrectionFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void symmetryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DiagonalSymmetryFilter filter = new DiagonalSymmetryFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void symmetryBLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BottomLeftSymmetryFilter filter = new BottomLeftSymmetryFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void batchSymmToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // 1. Выбираем папку с исходными текстурами
+            FolderBrowserDialog sourceDialog = new FolderBrowserDialog();
+            if (sourceDialog.ShowDialog() != DialogResult.OK) return;
+            string sourcePath = sourceDialog.SelectedPath;
+
+            // 2. Выбираем папку для сохранения
+            FolderBrowserDialog destDialog = new FolderBrowserDialog();
+            if (destDialog.ShowDialog() != DialogResult.OK) return;
+            string destPath = destDialog.SelectedPath;
+
+            string[] files = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(s => s.EndsWith(".png") || s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".bmp"))
+                .ToArray();
+
+            if (files.Length == 0)
+            {
+                MessageBox.Show("Изображения не найдены.");
+                return;
+            }
+
+            // Считаем реально сохраненные файлы
+            int savedCount = 0;
+
+            Task.Run(() =>
+            {
+                Filters filter = new BottomLeftSymmetryFilter();
+
+                foreach (string filePath in files)
+                {
+                    try
+                    {
+                        using (Bitmap srcImage = new Bitmap(filePath))
+                        {
+                            // ВАЖНО: Передаем null вместо backgroundWorker1, 
+                            // чтобы фильтр не игнорировал работу из-за старых флагов отмены
+                            Bitmap result = filter.processImage(srcImage, null);
+
+                            if (result != null)
+                            {
+                                string fileName = Path.GetFileName(filePath);
+                                string savePath = Path.Combine(destPath, "sym_" + fileName);
+
+                                result.Save(savePath);
+                                result.Dispose();
+                                savedCount++;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Выводим ошибку на экран, чтобы понять причину
+                        this.Invoke(new MethodInvoker(() => {
+                            MessageBox.Show($"Ошибка при обработке {Path.GetFileName(filePath)}: {ex.Message}");
+                        }));
+                    }
+                }
+
+                this.Invoke(new MethodInvoker(() => {
+                    MessageBox.Show($"Готово! Файлов в папке было: {files.Length}. Успешно сохранено: {savedCount}");
+                }));
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

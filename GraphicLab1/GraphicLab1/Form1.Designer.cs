@@ -50,11 +50,16 @@
             медианаToolStripMenuItem = new ToolStripMenuItem();
             фильтрСобеляToolStripMenuItem = new ToolStripMenuItem();
             фильтрЩарраToolStripMenuItem = new ToolStripMenuItem();
+            применитьСлучайныйToolStripMenuItem = new ToolStripMenuItem();
+            highPassToolStripMenuItem = new ToolStripMenuItem();
+            localILLuminationToolStripMenuItem = new ToolStripMenuItem();
+            symmetryToolStripMenuItem = new ToolStripMenuItem();
+            symmetryBLToolStripMenuItem = new ToolStripMenuItem();
             сохранитьToolStripMenuItem = new ToolStripMenuItem();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             progressBar1 = new ProgressBar();
             button1 = new Button();
-            применитьСлучайныйToolStripMenuItem = new ToolStripMenuItem();
+            batchSymmToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -71,7 +76,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { файлToolStripMenuItem, фильтрыToolStripMenuItem, сохранитьToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { файлToolStripMenuItem, фильтрыToolStripMenuItem, сохранитьToolStripMenuItem, batchSymmToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(907, 28);
@@ -94,7 +99,7 @@
             // 
             // фильтрыToolStripMenuItem
             // 
-            фильтрыToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { точечныеToolStripMenuItem, матричныеToolStripMenuItem, применитьСлучайныйToolStripMenuItem });
+            фильтрыToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { точечныеToolStripMenuItem, матричныеToolStripMenuItem, применитьСлучайныйToolStripMenuItem, highPassToolStripMenuItem, localILLuminationToolStripMenuItem, symmetryToolStripMenuItem, symmetryBLToolStripMenuItem });
             фильтрыToolStripMenuItem.Name = "фильтрыToolStripMenuItem";
             фильтрыToolStripMenuItem.Size = new Size(85, 24);
             фильтрыToolStripMenuItem.Text = "Фильтры";
@@ -218,6 +223,41 @@
             фильтрЩарраToolStripMenuItem.Text = "Фильтр Щарра";
             фильтрЩарраToolStripMenuItem.Click += фильтрЩарраToolStripMenuItem_Click;
             // 
+            // применитьСлучайныйToolStripMenuItem
+            // 
+            применитьСлучайныйToolStripMenuItem.Name = "применитьСлучайныйToolStripMenuItem";
+            применитьСлучайныйToolStripMenuItem.Size = new Size(252, 26);
+            применитьСлучайныйToolStripMenuItem.Text = "Применить случайный";
+            применитьСлучайныйToolStripMenuItem.Click += применитьСлучайныйToolStripMenuItem_Click;
+            // 
+            // highPassToolStripMenuItem
+            // 
+            highPassToolStripMenuItem.Name = "highPassToolStripMenuItem";
+            highPassToolStripMenuItem.Size = new Size(252, 26);
+            highPassToolStripMenuItem.Text = "HighPass";
+            highPassToolStripMenuItem.Click += highPassToolStripMenuItem_Click;
+            // 
+            // localILLuminationToolStripMenuItem
+            // 
+            localILLuminationToolStripMenuItem.Name = "localILLuminationToolStripMenuItem";
+            localILLuminationToolStripMenuItem.Size = new Size(252, 26);
+            localILLuminationToolStripMenuItem.Text = "Local ILLumination";
+            localILLuminationToolStripMenuItem.Click += localILLuminationToolStripMenuItem_Click;
+            // 
+            // symmetryToolStripMenuItem
+            // 
+            symmetryToolStripMenuItem.Name = "symmetryToolStripMenuItem";
+            symmetryToolStripMenuItem.Size = new Size(252, 26);
+            symmetryToolStripMenuItem.Text = "SymmetryDiag";
+            symmetryToolStripMenuItem.Click += symmetryToolStripMenuItem_Click;
+            // 
+            // symmetryBLToolStripMenuItem
+            // 
+            symmetryBLToolStripMenuItem.Name = "symmetryBLToolStripMenuItem";
+            symmetryBLToolStripMenuItem.Size = new Size(252, 26);
+            symmetryBLToolStripMenuItem.Text = "SymmetryBL";
+            symmetryBLToolStripMenuItem.Click += symmetryBLToolStripMenuItem_Click;
+            // 
             // сохранитьToolStripMenuItem
             // 
             сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
@@ -250,12 +290,12 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // применитьСлучайныйToolStripMenuItem
+            // batchSymmToolStripMenuItem
             // 
-            применитьСлучайныйToolStripMenuItem.Name = "применитьСлучайныйToolStripMenuItem";
-            применитьСлучайныйToolStripMenuItem.Size = new Size(252, 26);
-            применитьСлучайныйToolStripMenuItem.Text = "Применить случайный";
-            применитьСлучайныйToolStripMenuItem.Click += применитьСлучайныйToolStripMenuItem_Click;
+            batchSymmToolStripMenuItem.Name = "batchSymmToolStripMenuItem";
+            batchSymmToolStripMenuItem.Size = new Size(101, 24);
+            batchSymmToolStripMenuItem.Text = "BatchSymm";
+            batchSymmToolStripMenuItem.Click += batchSymmToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -305,5 +345,10 @@
         private ToolStripMenuItem фильтрСобеляToolStripMenuItem;
         private ToolStripMenuItem фильтрЩарраToolStripMenuItem;
         private ToolStripMenuItem применитьСлучайныйToolStripMenuItem;
+        private ToolStripMenuItem highPassToolStripMenuItem;
+        private ToolStripMenuItem localILLuminationToolStripMenuItem;
+        private ToolStripMenuItem symmetryToolStripMenuItem;
+        private ToolStripMenuItem symmetryBLToolStripMenuItem;
+        private ToolStripMenuItem batchSymmToolStripMenuItem;
     }
 }
