@@ -313,11 +313,12 @@ for(int i = 0; i < 10; i++)
  intersect.MaterialType = 0;
  */
 
- intersect.Color = materials[i%10].Color;
- intersect.LightCoeffs = materials[0].LightCoeffs;
- intersect.ReflectionCoef = materials[0].ReflectionCoef;
- intersect.RefractionCoef = materials[0].RefractionCoef;
- intersect.MaterialType = materials[0].MaterialType;
+ //intersect.Color = materials[i%10].Color;
+ intersect.Color = vec3(1,1,1);
+ intersect.LightCoeffs = materials[2].LightCoeffs;
+ intersect.ReflectionCoef = materials[2].ReflectionCoef;
+ intersect.RefractionCoef = materials[2].RefractionCoef;
+ intersect.MaterialType = materials[2].MaterialType;
 
  mat_color_id++;
  if(mat_color_id >= 6) {
